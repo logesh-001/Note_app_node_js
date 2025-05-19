@@ -1,0 +1,29 @@
+create database note_app;
+use note_app;
+create table user(
+id int auto_increment primary key,
+username varchar(255) unique not null,
+email varchar(255) unique not null,
+contact varchar(20) ,
+password varchar(255) not null,
+profile_image varchar(255)
+);
+create table notes(
+note_id int auto_increment primary key,
+user_id int,
+note text not null,
+date date,
+foreign key (user_id) references user(id)
+);
+
+packages - npm i express mysql2 bcryptjs jsonwebtoken cookie-parser cors dotenv multer
+
+
+Req flow  
+index.js - specifies the global endpoint path 
+    |
+    v
+authRoutes.js - specifies the endpoints and pass to the controller 
+    |
+    v
+authController - Process the request and access the DB 
