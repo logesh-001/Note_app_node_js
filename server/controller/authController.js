@@ -1,6 +1,7 @@
 const db = require("../db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { get } = require("../route/authRoutes");
 
 const register = async (req, res) => {
   try {
@@ -89,4 +90,45 @@ const login = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-module.exports = { register, login };
+const getCurrentUser = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const [userRows] = await db.query("SELECT * FROM user WHERE id = ?", [
+      userId,
+    ]);
+    if (userRows.length === 0) {
+      return res.status(404).json({ message: "User not found!" });
+    }
+    res.status(200).json(userRows[0]);
+  } catch (error) {
+    console.error("Error getting current user:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+// Updating profile image
+const uploadProfileImage = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const profile_image = req.file.path
+      ? `/uploads/${req.file.filename}`
+      : null;
+
+    const [result] = await db.query(
+      "update user set profile_image=? where id=?",
+      [profile_image, userId]
+    );
+    console.log(result);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "user not found!" });
+    }
+    res.status(200).json({
+      message: "Profile image uploaded successfully!",
+      profile_image,
+    });
+  } catch (error) {
+    console.error("Error uploading profile image:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+module.exports = { register, login, getCurrentUser, uploadProfileImage };

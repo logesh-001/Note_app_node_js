@@ -27,3 +27,10 @@ authRoutes.js - specifies the endpoints and pass to the controller
     |
     v
 authController - Process the request and access the DB 
+
+
+
+Front end 
+
+npm create vite (TS)
+npm i react-router-dom axios
