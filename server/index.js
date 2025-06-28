@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 require("dotenv").config();
 const db = require("./db");
 const authRoutes = require("./route/authRoutes");
@@ -6,7 +7,12 @@ const notesRoutes = require("./route/notesRoutes");
 const cookieParser = require("cookie-parser");
 
 const app = express();
-
+app.use(
+  cors({
+    origin: "http://localhost:3000", // ✅ allow React dev server
+    credentials: true, // if you're using cookies or auth headers
+  })
+);
 // middleware
 app.use(express.json()); // Add this to parse JSON
 app.use(cookieParser()); // Add this to parse cookies
