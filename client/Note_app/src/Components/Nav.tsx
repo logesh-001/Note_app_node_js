@@ -1,9 +1,15 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { logoutUser } from "../api/api"; // Adjust the import path as necessary
 
-const Nav = () => {
-  const isAuthenticated = false; // Replace with actual auth logic
-
+const Nav = ({ isAuth }) => {
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    const response = await logoutUser();
+    console.log("Logout response:", response);
+    window.location.reload();
+    navigate("/login"); // Redirect to login after logout
+  };
   return (
     <nav className="nav">
       <div className="nav__container">
@@ -12,7 +18,7 @@ const Nav = () => {
         </Link>
 
         <ul className="nav__links">
-          {isAuthenticated ? (
+          {isAuth ? (
             <>
               <li>
                 <Link to="/dashboard">Dashboard</Link>
@@ -21,7 +27,9 @@ const Nav = () => {
                 <Link to="/profile">Profile</Link>
               </li>
               <li>
-                <button className="nav__button">Logout</button>
+                <button className="nav__button" onClick={handleLogout}>
+                  Logout
+                </button>
               </li>
             </>
           ) : (

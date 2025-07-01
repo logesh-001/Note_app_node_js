@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../api/api"; // Adjust the import path as necessary
-const Login = () => {
+
+const Login = ({ setIsAuth }) => {
   const navigator = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
-  const handleChange = (e) => {
+  const handleChange = (e: { target: { name: any; value: any } }) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -16,7 +17,7 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     console.log("Form Data:", formData);
     try {
@@ -25,6 +26,7 @@ const Login = () => {
         throw new Error("Login failed, no token received");
       }
       console.log("Login successful:", data);
+      setIsAuth(true); // Set authentication state
       navigator("/dashboard"); // Redirect to dashboard after login
     } catch (error) {
       console.error("Error submitting form:", error);

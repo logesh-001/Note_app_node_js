@@ -43,3 +43,38 @@ export const loginUser = async (userData: any) => {
   // ✅ Don't expect token if you're using cookie auth
   return data;
 };
+
+export const logoutUser = async () => {
+  const response = await fetch(`${endpointUrl}/auth/logout`, {
+    method: "POST",
+    credentials: "include", // ✅ required to receive/set cookies
+  });
+
+  if (!response.ok) {
+    const err = await response.json();
+    throw new Error(err.message || "Failed to logout user");
+  }
+
+  // Clear session storage on logout
+  window.sessionStorage.removeItem("user");
+  console.log("User data cleared from sessionStorage");
+
+  return { message: "Logout successful" };
+};
+
+export const uploadProfileImage = async (formData: FormData) => {
+  const response = await fetch(`${endpointUrl}/auth/upload-profile-image`, {
+    method: "POST",
+    body: formData,
+    credentials: "include", // ✅ required to receive/set cookies
+  });
+
+  if (!response.ok) {
+    const err = await response.json();
+    throw new Error(err.message || "Failed to upload profile image");
+  }
+
+  const data = await response.json();
+  console.log("Profile image uploaded successfully:", data);
+  return data;
+};
